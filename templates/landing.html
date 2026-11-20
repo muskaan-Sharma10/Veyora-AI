@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veyora AI — Intelligent Recruitment. Smarter Career Growth.</title>
+  <meta name="description" content="Veyora AI is a two-sided recruitment and career platform. Recruiters review candidates with explainable scoring; candidates grow with personalised coaching." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="landing">
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <header class="landing-nav">
+    <a class="brand" href="/">
+      <span class="brand-mark">V</span>
+      <span class="brand-text">
+        <strong>Veyora AI</strong>
+        <small>Intelligent Recruitment</small>
+      </span>
+    </a>
+    <nav class="landing-links">
+      <a href="#product">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#agents">AI agents</a>
+    </nav>
+    <div class="landing-actions">
+      <a class="btn btn-ghost" href="{{ url_for('login') }}?role=candidate">Candidate login</a>
+      <a class="btn btn-primary" href="{{ url_for('login') }}?role=recruiter">Recruiter login</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Two sides. One intelligent platform.</span>
+        <h1>Intelligent Recruitment.<br /><em>Smarter Career Growth.</em></h1>
+        <p class="hero-lead">
+          Veyora AI gives recruiters an explainable candidate review workspace and gives
+          job seekers a personal career coach — powered by seven specialised AI agents and
+          a scoring rubric you can actually audit.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}?role=recruiter">
+            <span class="btn-ico">🏛</span> Login as Recruiter
+          </a>
+          <a class="btn btn-sage btn-lg" href="{{ url_for('login') }}?role=candidate">
+            <span class="btn-ico">🌱</span> Login as Candidate
+          </a>
+        </div>
+        <p class="hero-note">No credit card. Local account. Your resume stays in your own database.</p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="preview-card">
+          <div class="preview-head">
+            <span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span>
+            <span class="preview-title">Candidate Review Workspace</span>
+          </div>
+          <div class="preview-body">
+            <div class="preview-row">
+              <div>
+                <div class="preview-name">Priya Raman</div>
+                <div class="preview-meta">Senior Backend Engineer · 7 yrs</div>
+              </div>
+              <div class="preview-score">87<span>/100</span></div>
+            </div>
+            <div class="preview-bars">
+              <div><span>Mandatory skills</span><i style="--w:96%"></i></div>
+              <div><span>Preferred skills</span><i style="--w:70%"></i></div>
+              <div><span>Experience</span><i style="--w:100%"></i></div>
+              <div><span>Project relevance</span><i style="--w:75%"></i></div>
+            </div>
+            <div class="preview-tags">
+              <span class="tag tag-matched">Python</span>
+              <span class="tag tag-matched">AWS</span>
+              <span class="tag tag-partial">Terraform</span>
+              <span class="tag tag-missing">Kafka</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="product">
+      <div class="section-head">
+        <span class="eyebrow">Built for both sides of hiring</span>
+        <h2>One platform, two genuinely separate workspaces</h2>
+      </div>
+      <div class="split">
+        <article class="lane lane-recruiter">
+          <div class="lane-head">
+            <span class="lane-badge">For recruiters</span>
+            <h3>Review faster, decide with evidence</h3>
+          </div>
+          <ul class="lane-list">
+            <li>Create jobs and extract requirements automatically</li>
+            <li>Upload many PDF/DOCX resumes at once</li>
+            <li>Explainable 100-point compatibility score</li>
+            <li>Skill-gap analysis and interview plans</li>
+            <li>Shortlist, compare and schedule interviews</li>
+            <li>Preview and send invitation emails</li>
+          </ul>
+          <a class="btn btn-primary btn-block" href="{{ url_for('register') }}?role=recruiter">Create recruiter account</a>
+        </article>
+        <article class="lane lane-candidate">
+          <div class="lane-head">
+            <span class="lane-badge">For candidates</span>
+            <h3>Know your gaps, then close them</h3>
+          </div>
+          <ul class="lane-list">
+            <li>Resume review with concrete fixes</li>
+            <li>Match your resume to any job description</li>
+            <li>Prioritised skill gaps with practice tasks</li>
+            <li>Interview prep with sample answers and feedback</li>
+            <li>Personalised weekly learning roadmap</li>
+            <li>Progress tracking you control</li>
+          </ul>
+          <a class="btn btn-sage btn-block" href="{{ url_for('register') }}?role=candidate">Create candidate account</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2>From upload to interview in one workspace</h2>
+      </div>
+      <ol class="steps">
+        <li><span>01</span><h3>Describe the role</h3><p>Paste a job description or pick a saved job. The Job Description Analyst extracts required and preferred skills.</p></li>
+        <li><span>02</span><h3>Upload resumes</h3><p>Drop PDF, DOCX or text resumes. The Resume Intelligence Agent structures every candidate profile.</p></li>
+        <li><span>03</span><h3>Press Review Resume</h3><p>Seven agents run a real backend workflow with visible progress — parsing, scoring, gaps, and interview plans.</p></li>
+        <li><span>04</span><h3>Shortlist and invite</h3><p>Compare candidates side by side, reserve a slot, preview the invitation and send it.</p></li>
+      </ol>
+    </section>
+
+    <section class="section" id="agents">
+      <div class="section-head">
+        <span class="eyebrow">Seven specialised agents</span>
+        <h2>Each agent has one clear job</h2>
+      </div>
+      <div class="agent-grid">
+        <article><span>1</span><h3>Resume Intelligence</h3><p>Parses resumes into structured, evidence-only profiles.</p></article>
+        <article><span>2</span><h3>Job Description Analyst</h3><p>Separates mandatory from preferred requirements.</p></article>
+        <article><span>3</span><h3>Compatibility Scoring</h3><p>Applies a weighted rubric — the number is never invented by an LLM.</p></article>
+        <article><span>4</span><h3>Skill Gap &amp; Resume Coach</h3><p>Finds missing skills and weak resume evidence.</p></article>
+        <article><span>5</span><h3>Interview Strategist</h3><p>Builds tailored questions and critical verification areas.</p></article>
+        <article><span>6</span><h3>Recruitment &amp; Scheduling</h3><p>Manages slots, double-booking rules and invitations.</p></article>
+        <article><span>7</span><h3>Career Intelligence</h3><p>Creates weekly learning roadmaps with milestones.</p></article>
+      </div>
+    </section>
+
+    <section class="closing">
+      <h2>Start with the side you're on.</h2>
+      <div class="closing-actions">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}?role=recruiter">Recruiter login</a>
+        <a class="btn btn-sage btn-lg" href="{{ url_for('login') }}?role=candidate">Candidate login</a>
+      </div>
+      <p>New here? <a href="{{ url_for('register') }}">Create an account</a> — pick your role and you're in.</p>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <span>Veyora AI — Intelligent Recruitment. Smarter Career Growth.</span>
+    <span>AI output is guidance, never a hiring decision.</span>
+  </footer>
+</body>
+</html>

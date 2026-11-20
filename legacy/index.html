@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veyora AI | Recruiter workspace</title>
+  <meta name="description" content="A simpler way to review resumes, compare role-related experience, and plan interviews." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- Animated background orbs -->
+  <div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- App Shell -->
+  <div class="app">
+
+    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">🤖</div>
+          <div>
+            <div class="logo-title">Veyora AI</div>
+            <div class="logo-sub">Recruiter workspace</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-body">
+        <form id="pipeline-form" enctype="multipart/form-data">
+
+          <div class="form-section">
+            <label class="form-label" for="job-description">📋 Role details</label>
+            <textarea
+              id="job-description"
+              name="job_description"
+              class="form-textarea"
+              placeholder="Paste the job description here. Include the experience, skills, and responsibilities that matter for this role."
+              rows="10"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label" for="resume-files">📄 Candidate resumes</label>
+            <div class="drop-zone" id="drop-zone">
+              <div class="drop-zone-icon">☁️</div>
+              <div class="drop-zone-text">Drop PDF or text resumes here</div>
+              <div class="drop-zone-hint">or click to browse</div>
+              <input type="file" id="resume-files" name="resumes" multiple accept=".pdf,.txt" class="file-input" />
+            </div>
+            <div class="form-hint">PDF or .txt files · up to 20 files · 50 MB total</div>
+            <div id="file-notice" class="form-notice" role="status" aria-live="polite"></div>
+            <div id="file-list" class="file-list"></div>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label">📅 Suggested interview times</label>
+            <div class="slider-row">
+              <input type="range" id="top-n" name="top_n" min="3" max="5" value="3" class="slider" />
+              <span class="slider-value" id="top-n-value">3 candidates</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-run" id="btn-run">
+            <span class="btn-icon">▶</span>
+            <span>Review candidates</span>
+          </button>
+          <div id="form-error" class="form-notice" role="alert" aria-live="polite"></div>
+
+        </form>
+
+        <!-- Sample Data Loader -->
+        <div class="sample-section">
+          <div class="sample-label">Want to try it first?</div>
+          <button type="button" class="btn-sample" id="btn-sample" onclick="loadSampleData()">
+            📂 Load sample resumes
+          </button>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div class="agent-list">
+        <div class="agent-list-title">What you get</div>
+        <div class="agent-item"><span class="agent-dot"></span><span><strong>Resume summaries</strong><small>Skills and experience in one place</small></span></div>
+        <div class="agent-item"><span class="agent-dot"></span><span><strong>Role-fit insights</strong><small>Relevant experience and details to check</small></span></div>
+        <div class="agent-item"><span class="agent-dot bias"></span><span><strong>Fairness reminders</strong><small>Notes that may need a second look</small></span></div>
+        <div class="agent-item"><span class="agent-dot"></span><span><strong>Interview planning</strong><small>Suggested times for your review</small></span></div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════ MAIN ═══════════════════ -->
+    <main class="main">
+
+      <!-- Top Header -->
+      <header class="main-header">
+        <div class="header-left">
+          <h1 class="header-title">Recruiter workspace</h1>
+          <p class="header-sub">Review resumes, understand role fit, and plan next steps.</p>
+        </div>
+        <div class="header-right">
+          <span class="welcome-user">Hello, {{ user.name }}</span>
+          <form method="post" action="{{ url_for('logout') }}"><button class="btn-logout" type="submit">Sign out</button></form>
+          <span id="pipeline-status-badge"></span>
+        </div>
+      </header>
+
+      <div class="review-notice" role="note">
+        <strong>You’re in control.</strong> Suggestions can miss details, so check each resume yourself.
+        Interview times are examples only and are not booked.
+      </div>
+
+      <!-- ─── WELCOME SCREEN ─── -->
+      <section class="welcome-screen" id="welcome-screen">
+        <div class="welcome-content">
+          <div class="welcome-icon">🚀</div>
+          <h2 class="welcome-title">Make candidate reviews clearer</h2>
+          <p class="welcome-desc">Add role details and resumes to see experience summaries, relevant skills, and interview suggestions. Your team makes every hiring decision.</p>
+          <div class="welcome-agents">
+            <div class="wa-step"><div class="wa-label">Resume summaries</div><div class="wa-detail">See each person’s experience and skills.</div></div>
+            <div class="wa-step"><div class="wa-label">Role-fit insights</div><div class="wa-detail">Compare experience with your role details.</div></div>
+            <div class="wa-step wa-bias"><div class="wa-label">Fairness reminders</div><div class="wa-detail">Review notes that may need attention.</div></div>
+            <div class="wa-step"><div class="wa-label">Interview planning</div><div class="wa-detail">View suggested times to help plan.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── PIPELINE PROGRESS ─── -->
+      <section class="pipeline-section" id="pipeline-section" style="display:none">
+        <div class="section-header">
+          <h2 class="section-title">Preparing your review</h2>
+          <div class="section-subtitle" id="pipeline-subtitle">Getting things ready…</div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+        </div>
+      </section>
+
+      <!-- ─── RESULTS ─── -->
+      <section class="results-section" id="results-section" style="display:none">
+
+        <div class="results-heading">
+          <div>
+            <h2 class="section-title">Your candidate review</h2>
+            <p class="section-subtitle">Check the resume details yourself before deciding on next steps.</p>
+          </div>
+          <a class="btn-download" id="download-report" href="#" download>Download report</a>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="summary-cards" id="summary-cards"></div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" id="tab-candidates" onclick="switchTab('candidates')">Candidates</button>
+          <button class="tab" id="tab-bias" onclick="switchTab('bias')">Fairness check</button>
+          <button class="tab" id="tab-schedule" onclick="switchTab('schedule')">Suggested times</button>
+        </div>
+
+        <!-- Candidates Panel -->
+        <div class="tab-panel active" id="panel-candidates">
+          <div class="candidates-list" id="candidates-list"></div>
+        </div>
+
+        <!-- Bias Panel -->
+        <div class="tab-panel" id="panel-bias">
+          <div class="bias-container" id="bias-container"></div>
+        </div>
+
+        <!-- Schedule Panel -->
+        <div class="tab-panel" id="panel-schedule">
+          <p class="schedule-notice">These are suggested times, not calendar bookings. Emails are sent only when you choose “Send interview email.”</p>
+          <div class="email-setup-note" id="email-setup-note" role="status">Checking email setup…</div>
+          <div class="schedule-container" id="schedule-container"></div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

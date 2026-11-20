@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veyora AI | Recruiter workspace</title>
+  <meta name="description" content="Review resumes, compare candidates and manage interviews with evidence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="app-page">
+  <div class="bg-canvas" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <a class="brand" href="/">
+          <span class="brand-mark">V</span>
+          <span class="brand-text"><strong>Veyora AI</strong><small>Recruiter workspace</small></span>
+        </a>
+      </div>
+
+      <nav class="nav" aria-label="Recruiter navigation">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-ico">◈</span>Dashboard</button>
+        <button class="nav-link" data-view="jobs"><span class="nav-ico">▤</span>Jobs</button>
+        <button class="nav-link" data-view="review"><span class="nav-ico">⌕</span>Candidate Review</button>
+        <button class="nav-link" data-view="comparison"><span class="nav-ico">⇄</span>Candidate Comparison</button>
+        <button class="nav-link" data-view="planning"><span class="nav-ico">✎</span>Interview Planning</button>
+        <button class="nav-link" data-view="interviews"><span class="nav-ico">▦</span>Interview Management</button>
+        <button class="nav-link" data-view="settings"><span class="nav-ico">⚙</span>Settings</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="user-chip">
+          <span class="avatar">{{ user.name[0]|upper }}</span>
+          <span><strong>{{ user.name }}</strong><small>{{ user.email }}</small></span>
+        </div>
+        <form method="post" action="{{ url_for('logout') }}">
+          <button class="btn btn-ghost btn-block btn-sm" type="submit">Sign out</button>
+        </form>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <div>
+          <h1 id="view-title">Dashboard</h1>
+          <p id="view-subtitle">Review resumes, understand role fit and plan next steps.</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="pill" id="ai-pill">Checking AI…</span>
+          <span class="pill pill-muted" id="email-pill">Email: checking…</span>
+        </div>
+      </header>
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <section class="view active" id="view-dashboard">
+        <div class="stat-grid">
+          <article class="stat-card"><span class="stat-label">Jobs</span><strong id="stat-jobs">0</strong><small>open roles you manage</small></article>
+          <article class="stat-card"><span class="stat-label">Candidates reviewed</span><strong id="stat-applications">0</strong><small>stored with full analysis</small></article>
+          <article class="stat-card"><span class="stat-label">Shortlisted</span><strong id="stat-shortlisted">0</strong><small>moved forward</small></article>
+          <article class="stat-card"><span class="stat-label">Interviews</span><strong id="stat-interviews">0</strong><small>active slots</small></article>
+        </div>
+
+        <div class="banner" id="ai-banner">Checking AI configuration…</div>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><h2>Recent jobs</h2><button class="btn btn-ghost btn-sm" data-goto="jobs">Manage jobs</button></div>
+            <div id="dash-jobs" class="stack"><p class="muted">No jobs yet.</p></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><h2>Upcoming interviews</h2><button class="btn btn-ghost btn-sm" data-goto="interviews">Open calendar</button></div>
+            <div id="dash-interviews" class="stack"><p class="muted">No interviews scheduled.</p></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-head">
+            <h2>AI screening decisions</h2>
+            <span class="pill pill-muted" id="screening-threshold">60/100 rule</span>
+          </div>
+          <p class="muted">The Screening Decision Agent applies one rule: a candidate at or above the threshold is shortlisted, anyone below is rejected. Give it the job description and resumes — it also books the interview slots for shortlisted candidates.</p>
+          <div id="dash-decisions" class="stack"><p class="muted">No screening decisions yet. Run a review and the agent decides for each candidate.</p></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><h2>Start a review</h2></div>
+          <p class="muted">Resume summaries, role-fit insights and interview plans in one place. Upload resumes, press <strong>Review Resume</strong>, and every stage runs on the backend with visible progress.</p>
+          <div class="row-actions">
+            <button class="btn btn-primary" data-goto="review">Open Candidate Review Workspace</button>
+            <button class="btn btn-ghost" id="btn-sample-dashboard" type="button">Load demo resumes</button>
+          </div>
+        </article>
+      </section>
+
+      <!-- ══════════ JOBS ══════════ -->
+      <section class="view" id="view-jobs">
+        <div class="grid-2 grid-aside">
+          <article class="card">
+            <div class="card-head"><h2>Create a job opening</h2></div>
+            <form id="job-form" class="form-grid">
+              <label>Job title
+                <input id="job-title" type="text" placeholder="Senior Python Developer" required />
+              </label>
+              <div class="form-row">
+                <label>Minimum years
+                  <input id="job-min-years" type="number" min="0" step="0.5" placeholder="5" />
+                </label>
+                <label>Seniority
+                  <input id="job-seniority" type="text" placeholder="Senior" />
+                </label>
+              </div>
+              <label>Required skills <small>(comma separated — optional, extracted automatically)</small>
+                <input id="job-required" type="text" placeholder="Python, AWS, Docker" />
+              </label>
+              <label>Preferred skills
+                <input id="job-preferred" type="text" placeholder="Terraform, Kafka" />
+              </label>
+              <label>Job description
+                <textarea id="job-description" rows="8" placeholder="Paste the full job description, including responsibilities and qualifications." required></textarea>
+              </label>
+              <div class="form-notice" id="job-error" role="alert"></div>
+              <button class="btn btn-primary" type="submit">Save job</button>
+            </form>
+          </article>
+          <article class="card">
+            <div class="card-head"><h2>Your jobs</h2><span class="pill pill-muted" id="jobs-count">0</span></div>
+            <div id="jobs-list" class="stack"><p class="muted">No jobs yet. Create one to get started.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ══════════ CANDIDATE REVIEW ══════════ -->
+      <section class="view" id="view-review">
+        <div class="workspace-head">
+          <div>
+            <span class="eyebrow">Candidate Review Workspace</span>
+            <h2 class="workspace-title">Three steps, one evidence-based review</h2>
+            <p class="muted">Nothing here is a mock. Pressing Review Resume runs parsing, scoring, gap analysis and interview planning on the server.</p>
+          </div>
+        </div>
+
+        <!-- Step 1 -->
+        <article class="card step-card">
+          <header class="step-head"><span class="step-num">1</span><div><h2>Job description</h2><p>Select a saved job or enter a new description.</p></div></header>
+          <div class="form-grid">
+            <label>Select an existing job
+              <select id="review-job-select">
+                <option value="">— New job / enter below —</option>
+              </select>
+            </label>
+            <label>Job title
+              <input id="review-title" type="text" placeholder="Senior Python Developer" />
+            </label>
+            <label>Job description
+              <textarea id="review-description" rows="8" placeholder="Paste the job description. Include required skills, preferred skills and experience requirements."></textarea>
+            </label>
+            <div class="form-row">
+              <label>Required skills <small>(optional override)</small>
+                <input id="review-required" type="text" placeholder="Python, AWS, Docker" />
+              </label>
+              <label>Preferred skills <small>(optional override)</small>
+                <input id="review-preferred" type="text" placeholder="Terraform, Kafka" />
+              </label>
+            </div>
+            <div class="form-row">
+              <label>Minimum years of experience
+                <input id="review-min-years" type="number" min="0" step="0.5" placeholder="5" />
+              </label>
+              <div class="inline-action">
+                <button class="btn btn-ghost" id="btn-analyze-jd" type="button">Analyse job description</button>
+                <button class="btn btn-ghost" id="btn-load-sample" type="button">Load demo job + resumes</button>
+              </div>
+            </div>
+            <div id="jd-analysis" class="analysis-box" hidden></div>
+          </div>
+        </article>
+
+        <!-- Step 2 -->
+        <article class="card step-card">
+          <header class="step-head"><span class="step-num">2</span><div><h2>Resumes</h2><p>PDF, DOCX or TXT — upload up to 20 at once.</p></div></header>
+          <div class="drop-zone" id="drop-zone">
+            <div class="drop-icon">⇪</div>
+            <strong>Drop resumes here</strong>
+            <span>or click to browse</span>
+            <input type="file" id="resume-files" multiple accept=".pdf,.docx,.txt" class="file-input" />
+          </div>
+          <div class="form-notice" id="file-notice" role="status" aria-live="polite"></div>
+          <div id="file-list" class="file-list"></div>
+        </article>
+
+        <!-- Step 3 -->
+        <article class="card step-card step-primary">
+          <header class="step-head"><span class="step-num">3</span><div><h2>Run the review</h2><p>The backend workflow validates inputs, then runs all seven agents.</p></div></header>
+          <button class="btn btn-primary btn-xl" id="btn-review" type="button">
+            <span class="btn-ico">▶</span> REVIEW RESUME
+          </button>
+          <div class="form-notice" id="review-error" role="alert"></div>
+          <div class="progress-wrap" id="review-progress" hidden>
+            <div class="progress-bar"><span id="progress-fill"></span></div>
+            <div class="stage-list" id="review-stages"></div>
+          </div>
+        </article>
+
+        <!-- Results -->
+        <div id="review-results" hidden>
+          <div class="results-head">
+            <div><span class="eyebrow">Review complete</span><h2 id="results-title">Candidate results</h2><p id="results-meta" class="muted"></p></div>
+            <div class="row-actions">
+              <button class="btn btn-ghost btn-sm" id="btn-export-report" type="button">Download JSON</button>
+              <button class="btn btn-sage btn-sm" id="btn-goto-comparison" type="button">Compare candidates</button>
+            </div>
+          </div>
+          <div class="candidate-tabs" id="candidate-tabs" role="tablist"></div>
+          <div id="candidate-panels"></div>
+        </div>
+      </section>
+
+      <!-- ══════════ COMPARISON ══════════ -->
+      <section class="view" id="view-comparison">
+        <article class="card">
+          <div class="card-head"><h2>Compare candidates for one role</h2></div>
+          <div class="form-row form-row-end">
+            <label>Job
+              <select id="comparison-job-select"><option value="">Select a job…</option></select>
+            </label>
+            <button class="btn btn-primary" id="btn-comparison" type="button">Load comparison</button>
+          </div>
+          <div id="comparison-body" class="stack"><p class="muted">Select a job to compare the candidates you have reviewed.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ INTERVIEW PLANNING ══════════ -->
+      <section class="view" id="view-planning">
+        <article class="card">
+          <div class="card-head"><h2>Interview plans by candidate</h2></div>
+          <div class="form-row form-row-end">
+            <label>Job
+              <select id="planning-job-select"><option value="">Select a job…</option></select>
+            </label>
+            <button class="btn btn-primary" id="btn-planning" type="button">Load interview plans</button>
+          </div>
+          <div id="planning-body" class="stack"><p class="muted">Select a job to see each candidate's question plan and critical areas to verify.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ INTERVIEW MANAGEMENT ══════════ -->
+      <section class="view" id="view-interviews">
+        <div class="grid-2 grid-aside">
+          <article class="card">
+            <div class="card-head"><h2>Create an interview slot</h2></div>
+            <form id="slot-form" class="form-grid">
+              <div class="form-row">
+                <label>Date <input id="slot-date" type="date" required /></label>
+                <label>Start <input id="slot-start" type="time" required /></label>
+                <label>End <input id="slot-end" type="time" required /></label>
+              </div>
+              <div class="form-row">
+                <label>Timezone
+                  <select id="slot-timezone">
+                    <option>UTC</option><option>Europe/London</option><option>Europe/Berlin</option>
+                    <option>America/New_York</option><option>America/Los_Angeles</option>
+                    <option>Asia/Kolkata</option><option>Asia/Singapore</option><option>Australia/Sydney</option>
+                  </select>
+                </label>
+                <label>Mode
+                  <select id="slot-mode"><option>Video</option><option>On-site</option><option>Phone</option></select>
+                </label>
+              </div>
+              <label>Interviewer <input id="slot-interviewer" type="text" placeholder="Sarah Chen" /></label>
+              <label>Location / meeting link <input id="slot-location" type="text" placeholder="https://meet.example.com/abc" /></label>
+              <label>Assign a reviewed candidate (optional)
+                <select id="slot-candidate"><option value="">— Leave slot available —</option></select>
+              </label>
+              <label>Interview instructions <textarea id="slot-notes" rows="3" placeholder="Bring a portfolio, allow 60 minutes, etc."></textarea></label>
+              <div class="form-notice" id="slot-error" role="alert"></div>
+              <button class="btn btn-primary" type="submit">Create slot</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Slots</h2>
+              <span class="pill pill-muted" id="slots-count">0</span>
+            </div>
+            <div class="legend">
+              <span class="status status-available">Available</span>
+              <span class="status status-reserved">Reserved</span>
+              <span class="status status-confirmed">Confirmed</span>
+              <span class="status status-cancelled">Cancelled</span>
+            </div>
+            <div id="slots-list" class="stack"><p class="muted">No slots yet.</p></div>
+          </article>
+        </div>
+
+        <article class="card" id="email-panel" hidden>
+          <div class="card-head">
+            <h2>Email invitation</h2>
+            <span class="pill pill-muted" id="email-status">Preview</span>
+          </div>
+          <div class="banner banner-small" id="email-configured-note"></div>
+          <div class="form-grid">
+            <label>To <input id="email-to" type="email" placeholder="candidate@example.com" /></label>
+            <label>Subject <input id="email-subject" type="text" /></label>
+            <label>Message <textarea id="email-body" rows="12"></textarea></label>
+          </div>
+          <div class="row-actions">
+            <button class="btn btn-primary" id="btn-send-email" type="button">SEND EMAIL</button>
+            <button class="btn btn-ghost" id="btn-close-email" type="button">Close</button>
+          </div>
+          <div class="form-notice" id="email-result" role="alert"></div>
+        </article>
+      </section>
+
+      <!-- ══════════ SETTINGS ══════════ -->
+      <section class="view" id="view-settings">
+        <article class="card">
+          <div class="card-head"><h2>Configuration</h2></div>
+          <div id="settings-body" class="stack"><p class="muted">Loading settings…</p></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="{{ url_for('static', filename='js/recruiter.js') }}"></script>
+</body>
+</html>

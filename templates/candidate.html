@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veyora AI | Candidate workspace</title>
+  <meta name="description" content="Review your resume, close skill gaps and prepare for interviews with Veyora AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="app-page">
+  <div class="bg-canvas" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <a class="brand" href="/">
+          <span class="brand-mark">V</span>
+          <span class="brand-text"><strong>Veyora AI</strong><small>Candidate workspace</small></span>
+        </a>
+      </div>
+
+      <nav class="nav" aria-label="Candidate navigation">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-ico">◈</span>Dashboard</button>
+        <button class="nav-link" data-view="resume"><span class="nav-ico">▤</span>Resume Review</button>
+        <button class="nav-link" data-view="compatibility"><span class="nav-ico">⇄</span>Job Compatibility</button>
+        <button class="nav-link" data-view="gaps"><span class="nav-ico">◇</span>Skill Gap Analysis</button>
+        <button class="nav-link" data-view="prep"><span class="nav-ico">✎</span>Interview Preparation</button>
+        <button class="nav-link" data-view="roadmap"><span class="nav-ico">⌁</span>Career Roadmap</button>
+        <button class="nav-link" data-view="settings"><span class="nav-ico">⚙</span>Settings</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="user-chip">
+          <span class="avatar">{{ user.name[0]|upper }}</span>
+          <span><strong>{{ user.name }}</strong><small>{{ user.email }}</small></span>
+        </div>
+        <form method="post" action="{{ url_for('logout') }}">
+          <button class="btn btn-ghost btn-block btn-sm" type="submit">Sign out</button>
+        </form>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <div>
+          <h1 id="view-title">Dashboard</h1>
+          <p id="view-subtitle">Your resume, your gaps, your next step.</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="pill" id="ai-pill">Checking AI…</span>
+          <span class="pill pill-muted" id="resume-pill">No resume uploaded</span>
+        </div>
+      </header>
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <section class="view active" id="view-dashboard">
+        <div class="candidate-intro">
+          <span class="eyebrow">Your career workspace</span>
+          <h2>Get ready for your next opportunity</h2>
+          <p>Upload your resume once. Every analysis — compatibility, gaps, interview prep and roadmap — builds on it.</p>
+        </div>
+
+        <div class="banner" id="ai-banner">Checking AI configuration…</div>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><h2>Your resume</h2><span class="pill pill-muted" id="resume-status">Not uploaded</span></div>
+            <div class="drop-zone" id="cand-drop">
+              <div class="drop-icon">⇪</div>
+              <strong>Drop your resume here</strong>
+              <span>PDF, DOCX or TXT · or click to browse</span>
+              <input type="file" id="cand-file" accept=".pdf,.docx,.txt" class="file-input" />
+            </div>
+            <div class="form-notice" id="upload-status" role="status" aria-live="polite"></div>
+            <button class="btn btn-primary" id="btn-upload-resume" type="button">Upload &amp; parse resume</button>
+            <p class="hint">Parsing extracts your skills, experience, education and projects. It never invents details.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><h2>Snapshots</h2></div>
+            <div id="resume-profile" class="stack"><p class="muted">Upload a resume to see your structured profile.</p></div>
+            <div class="card-head card-head-tight"><h3>Recent analyses</h3></div>
+            <div id="recent-reports" class="stack"><p class="muted">No analyses yet.</p></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-head"><h2>Roles open right now</h2><span class="pill pill-muted" id="open-roles-count">0</span></div>
+          <p class="muted">These are the requirements recruiters are screening against. Pick a role to see the exact skills it asks for and the questions you will be asked.</p>
+          <div id="open-roles" class="stack"><p class="muted">Loading open roles…</p></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><h2>Where to start</h2></div>
+          <div class="quick-grid">
+            <button class="quick-card" data-goto="resume"><strong>Review my resume</strong><small>Find weak bullets and missing evidence</small></button>
+            <button class="quick-card" data-goto="compatibility"><strong>Check job fit</strong><small>Score against a real job description</small></button>
+            <button class="quick-card" data-goto="gaps"><strong>Close skill gaps</strong><small>Prioritised learning tasks</small></button>
+            <button class="quick-card" data-goto="prep"><strong>Practise interviews</strong><small>Answer, get feedback, improve</small></button>
+            <button class="quick-card" data-goto="roadmap"><strong>Build a roadmap</strong><small>Weekly goals with milestones</small></button>
+          </div>
+        </article>
+      </section>
+
+      <!-- ══════════ RESUME REVIEW ══════════ -->
+      <section class="view" id="view-resume">
+        <article class="card">
+          <div class="card-head"><h2>Resume review</h2></div>
+          <p class="muted">Optional: add a target job so the feedback is role-specific.</p>
+          <div class="form-grid">
+            <label>Target job description <small>(optional)</small>
+              <textarea id="review-jd" class="jd-input" rows="6" placeholder="Paste a job description to tailor the feedback."></textarea>
+            </label>
+            <button class="btn btn-primary" id="btn-resume-review" type="button">REVIEW MY RESUME</button>
+          </div>
+          <div id="resume-review-output" class="stack"><p class="muted">Your review will appear here.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ COMPATIBILITY ══════════ -->
+      <section class="view" id="view-compatibility">
+        <article class="card">
+          <div class="card-head"><h2>Job compatibility</h2></div>
+          <div class="form-grid">
+            <label>Job title <small>(optional)</small><input id="compat-title" type="text" placeholder="Backend Engineer" /></label>
+            <label>Job description
+              <textarea id="compat-jd" class="jd-input" rows="8" placeholder="Paste the job description you're targeting."></textarea>
+            </label>
+            <button class="btn btn-primary" id="btn-compat" type="button">Check compatibility</button>
+          </div>
+          <div id="compat-output" class="stack"><p class="muted">Your score and its breakdown will appear here.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ SKILL GAPS ══════════ -->
+      <section class="view" id="view-gaps">
+        <article class="card">
+          <div class="card-head"><h2>Skill gap analysis</h2></div>
+          <div class="form-grid">
+            <label>Open role <small>(optional — uses the recruiter's requirements)</small>
+              <select id="gaps-job"><option value="">— Paste a job description below —</option></select>
+            </label>
+            <label>Target role or job description
+              <textarea id="gaps-jd" class="jd-input" rows="7" placeholder="Paste the job description or describe the role you want."></textarea>
+            </label>
+            <button class="btn btn-primary" id="btn-gaps" type="button">Analyse my gaps</button>
+          </div>
+          <div id="gaps-output" class="stack"><p class="muted">Prioritised gaps and practice tasks will appear here.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ INTERVIEW PREP ══════════ -->
+      <section class="view" id="view-prep">
+        <article class="card">
+          <div class="card-head"><h2>Interview preparation</h2></div>
+          <div class="form-grid">
+            <label>Open role <small>(optional — uses the recruiter's requirements)</small>
+              <select id="prep-job"><option value="">— Paste a job description below —</option></select>
+            </label>
+            <label>Target role or job description
+              <textarea id="prep-jd" class="jd-input" rows="6" placeholder="Paste the job description to tailor your questions."></textarea>
+            </label>
+            <button class="btn btn-primary" id="btn-prep" type="button">Generate my interview plan</button>
+          </div>
+          <div id="prep-output" class="stack"><p class="muted">Your question plan, sample answers and practice mode will appear here.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ ROADMAP ══════════ -->
+      <section class="view" id="view-roadmap">
+        <article class="card">
+          <div class="card-head"><h2>Career roadmap</h2></div>
+          <div class="form-grid">
+            <label>Target role or job description
+              <textarea id="roadmap-jd" class="jd-input" rows="6" placeholder="What role are you working toward?"></textarea>
+            </label>
+            <button class="btn btn-primary" id="btn-roadmap" type="button">Build my roadmap</button>
+          </div>
+          <div id="roadmap-output" class="stack"><p class="muted">Your weekly plan and milestones will appear here.</p></div>
+        </article>
+      </section>
+
+      <!-- ══════════ SETTINGS ══════════ -->
+      <section class="view" id="view-settings">
+        <article class="card">
+          <div class="card-head"><h2>Account &amp; configuration</h2></div>
+          <div id="cand-settings" class="stack"><p class="muted">Loading…</p></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="{{ url_for('static', filename='js/candidate.js') }}"></script>
+</body>
+</html>

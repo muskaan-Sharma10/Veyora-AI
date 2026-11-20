@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ "Create account" if mode == "register" else "Sign in" }} | Veyora AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="auth-page">
+  <div class="bg-canvas" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+  <div class="auth-shell">
+    <section class="auth-aside">
+      <a class="brand" href="/">
+        <span class="brand-mark">V</span>
+        <span class="brand-text"><strong>Veyora AI</strong><small>Intelligent Recruitment</small></span>
+      </a>
+      <h1>Intelligent Recruitment.<br /><em>Smarter Career Growth.</em></h1>
+      <p class="auth-aside-lead">Two workspaces, seven AI agents, one explainable scoring method.</p>
+      <ul class="auth-points">
+        <li><span>🏛</span> Recruiters review, compare and schedule with evidence.</li>
+        <li><span>🌱</span> Candidates get resume coaching and a learning roadmap.</li>
+        <li><span>🔎</span> Every score shows its breakdown — no black boxes.</li>
+      </ul>
+      <div class="auth-role-hint">
+        {% if role_choice == 'candidate' %}
+          You're signing in to the <strong>candidate</strong> workspace.
+        {% else %}
+          You're signing in to the <strong>recruiter</strong> workspace.
+        {% endif %}
+      </div>
+    </section>
+
+    <main class="auth-card">
+      <h2>{{ "Create your account" if mode == "register" else "Welcome back" }}</h2>
+      <p class="auth-subtitle">
+        {{ "Choose how you'll use Veyora AI." if mode == "register" else "Sign in to your recruiter or candidate workspace." }}
+      </p>
+      {% if error %}<div class="auth-error" role="alert">{{ error }}</div>{% endif %}
+
+      <form method="post" class="auth-form">
+        {% if mode == "register" %}
+        <label for="name">Your name</label>
+        <input id="name" name="name" type="text" autocomplete="name" required value="{{ values.name }}" />
+        {% endif %}
+
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required
+               value="{{ values.email if values is defined else '' }}" />
+
+        <label for="password">Password{% if mode == "register" %} (at least 8 characters){% endif %}</label>
+        <input id="password" name="password" type="password" required
+               autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}"
+               minlength="{{ 8 if mode == 'register' else 1 }}" />
+
+        <fieldset class="role-picker">
+          <legend>I'm using Veyora AI as a</legend>
+          <label class="role-option">
+            <input type="radio" name="role" value="recruiter" required
+              {% if (values is defined and values.role == 'recruiter') or (values is not defined and role_choice != 'candidate') %}checked{% endif %} />
+            <span class="role-card"><strong>Recruiter</strong><small>Hiring &amp; interviews</small></span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="candidate"
+              {% if (values is defined and values.role == 'candidate') or (values is not defined and role_choice == 'candidate') %}checked{% endif %} />
+            <span class="role-card"><strong>Candidate</strong><small>Job seeker &amp; career growth</small></span>
+          </label>
+        </fieldset>
+
+        <button class="btn btn-primary btn-block" type="submit">
+          {{ "Create account" if mode == "register" else "Sign in" }}
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        {% if mode == "register" %}Already have an account? <a href="{{ url_for('login') }}?role={{ role_choice }}">Sign in</a>
+        {% else %}New to Veyora AI? <a href="{{ url_for('register') }}?role={{ role_choice }}">Create an account</a>{% endif %}
+      </p>
+      <p class="auth-privacy">Your resume is used only to prepare your own review. AI suggestions can be incomplete — check the details yourself.</p>
+    </main>
+  </div>
+</body>
+</html>

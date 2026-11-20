@@ -1,0 +1,43 @@
+Job Title: Senior Python Developer
+Company: TechCorp Solutions
+Location: San Francisco, CA (Hybrid — 3 days on-site)
+Department: Platform Engineering
+Reports To: Director of Engineering
+
+About TechCorp Solutions:
+TechCorp Solutions is a rapidly growing B2B SaaS company powering data infrastructure for Fortune 500 clients. Our platform processes over 10 billion events per day, and our engineering team is at the core of everything we build.
+
+About the Role:
+We are seeking a highly skilled Senior Python Developer to join our Platform Engineering team. You will design, build, and maintain the scalable backend systems that power our data ingestion and processing pipelines. This is a high-impact role that requires both technical depth and collaborative leadership.
+
+Required Qualifications:
+- 5+ years of professional Python development experience in a production environment
+- Strong proficiency with AWS cloud services (EC2, S3, Lambda, RDS, CloudFormation, IAM)
+- Hands-on experience with Docker and container orchestration (Kubernetes preferred)
+- CI/CD pipeline design and maintenance using GitHub Actions, Jenkins, or CircleCI
+- RESTful API design and development using FastAPI or Django REST Framework
+- Database experience with PostgreSQL, MongoDB, or Redis in production
+- Familiarity with Agile/Scrum methodologies and sprint-based delivery
+- Strong problem-solving skills and experience debugging distributed systems
+
+Preferred Qualifications:
+- AWS certification (Solutions Architect Associate or Developer Associate)
+- Experience with Apache Kafka, RabbitMQ, or similar message queue systems
+- Proficiency with Terraform or AWS CDK for infrastructure as code
+- Experience with microservices architecture and service mesh (Istio/Linkerd)
+- Contributions to open-source Python projects (GitHub link preferred)
+- Knowledge of observability tools: Datadog, Prometheus, Grafana
+
+Responsibilities:
+- Design and implement high-performance backend services and data pipelines in Python
+- Lead technical design reviews and architecture decisions
+- Conduct thorough code reviews and mentor junior/mid-level developers
+- Collaborate closely with product managers, data engineers, and frontend teams
+- Optimize application performance, reliability, and system scalability
+- Participate in on-call rotation for production incident response (1 week per month)
+- Contribute to internal engineering documentation and best practices
+
+Compensation:
+- Salary: $160,000 – $200,000 annually
+- Equity: 0.1% – 0.3% (4-year vest, 1-year cliff)
+- Benefits: Full medical/dental/vision, 401k match, unlimited PTO, $2,000/year learning stipend
